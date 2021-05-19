@@ -1,15 +1,26 @@
 def input_students
-  puts "Please enter the names of the students"
-  puts "To finish, just hit return twice"
-  students = []
-  name = gets.chomp
-  while !name.empty? do
-    students << {name: name, cohort: :november}
-    puts "Now we have #{students.count} students"
+  $students = []
+  continue = "yes"
+  while continue == "yes"
+    puts "Please enter the name of the student"
     name = gets.chomp
+    puts "Please enter a hobby of the student"
+    hobby = gets.chomp
+    puts "Please enter the date of birth of the student"
+    date_of_birth = gets.chomp
+    puts "Please enter the height(cm) of the student"
+    height = gets.chomp
+    save_student(name, hobby, date_of_birth, height)  
+    puts "Add another student? enter yes or no"
+    continue = gets.chomp 
   end
-  students
+  $students
 end
+
+def save_student(name, hobby, date_of_birth, height)
+  $students << {name: name, cohort: :november, hobby: hobby, date_of_birth: date_of_birth, height: height}
+  puts "Now we have #{$students.count} students"
+end    
 
 def print_header
   puts "The students of villains Academy"
@@ -19,7 +30,9 @@ end
 def print(students)
   i = 0
   until i >= students.length
-    puts "#{students[i][:name]} (#{students[i][:cohort]} cohort)"
+    puts "#{students[i][:name]} - (#{students[i][:cohort]} 
+    cohort) - HOBBY: #{students[i][:hobby]} - BORN: 
+    #{students[i][:date_of_birth]} - HEIGHT: #{students[i][:height]}"
     i += 1
   end  
 end
