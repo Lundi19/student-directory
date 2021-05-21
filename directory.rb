@@ -58,7 +58,9 @@ def cohort_input
 
 def save_student(name, cohort, hobby, date_of_birth, height)
   $students << {name: name, cohort: cohort , hobby: hobby, date_of_birth: date_of_birth, height: height}
-  puts "\nNow we have #{$students.count} students"
+  plural = ""
+  plural = "s" if $students.length > 1 
+  puts "\nNow we have #{$students.count} student#{plural}"
 end    
 
 def print_header
@@ -81,7 +83,11 @@ def print(students)
 end
 
 def print_footer(students)
-  puts "Overall, we have #{students.count} great students".center(100)
+  plural = ""
+  plural = "s" if students.length > 1 
+  puts "Overall, we have #{students.count} great student#{plural}".center(100)
+  #find is number of students is great than 1
+  # interpolate an "S" if its going to be plural"
 end
 
 students = input_students
