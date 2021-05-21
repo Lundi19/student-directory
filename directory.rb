@@ -16,7 +16,7 @@ def input_students
     puts "\n---Please enter the height(cm) of the student:"
     height = confirm_input
     height = "n/a" if height == ""
-    save_student(name, cohort, hobby, date_of_birth, height)  
+    push_student(name, cohort, hobby, date_of_birth, height)  
     puts "\n---Add another student? enter y/n:"
     continue = gets.strip
   end
@@ -48,7 +48,7 @@ def cohort_input
   choice.capitalize.to_sym
   end
 
-def save_student(name, cohort, hobby, date_of_birth, height)
+def push_student(name, cohort, hobby, date_of_birth, height)
   @students << {name: name, cohort: cohort , hobby: hobby, date_of_birth: date_of_birth, height: height}
   plural = ""
   plural = "s" if @students.length > 1 
@@ -82,7 +82,7 @@ def print_footer(students)
   return if @students.length == 0
   plural = ""
   plural = "s" if @students.length > 1
-  puts "\nOverall, we have #{@students.count} great student#{plural}".center(100)
+  puts "Overall, we have #{@students.count} great student#{plural}".center(100)
   #find is number of students is great than 1
   # interpolate an "S" if its going to be plural"
 end
@@ -94,10 +94,33 @@ def interactive_menu
   end
 end
 
+def save_students
+  # open the file for writing
+  file = File.open("file.csv", "w")
+  # iterate over the array of students
+  @students.each do |student|
+    student_data = [student[:name], student[:cohort], student[:hobby], student[:date_of_birth], student[:height]]
+    csv_line = student_data.join(",")
+    file.puts csv_line
+  end
+  file.close
+end
+
+def load_students
+  file = File.open("file.csv", "r")
+  file.readlines.each do |line|
+  name, cohort, hobby, date_of_birth, height = line.chomp.split(',')
+    @students << {name: name, cohort: cohort.to_sym, hobby: hobby, date_of_birth: date_of_birth, height: height}
+  end
+  file.close
+end
+
 def process(selection)
   case selection
     when "1" then input_students
     when "2" then show_students
+    when "3" then save_students
+    when "4" then load_students   
     when "9" then exit
     else puts "\nI don't know what you mean, try again"
   end
@@ -107,6 +130,8 @@ def print_menu
   
   puts "\n1. Input the students"
   puts "2. Show the students"
+  puts "3. Save students to file"
+  puts "4. Load students from file"
   puts "9. Exit\n" 
   puts 
 end
