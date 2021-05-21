@@ -24,25 +24,25 @@ def input_students
 end
 
 def confirm_input
-  input = gets.chomp
+  input = STDIN.gets.chomp
   puts "\n---You entered #{input}, is this correct? y/n ?"
   choice = "n"
-  choice  = gets.chomp
+  choice  = STDIN.gets.chomp
     until choice == "y"
       puts "---\nPlease re-enter:"
-      input = gets.strip
+      input = STDIN.gets.strip
       puts "---\nYou entered #{input}, is this correct? y/n?"  
-      choice  = gets.chomp
+      choice  = STDIN.gets.chomp
     end
   input
 end  
 
 def cohort_input
-  choice = gets.strip
+  choice = STDIN.gets.strip
   months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
    until months.include?(choice.downcase.to_sym)
     puts "\n---Please enter a valid month:"
-    choice = gets.strip
+    choice = STDIN.gets.strip
     end  
   puts "\n---Student, added to #{choice.capitalize}"
   choice.capitalize.to_sym
@@ -90,7 +90,7 @@ end
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -106,14 +106,27 @@ def save_students
   file.close
 end
 
-def load_students
-  file = File.open("file.csv", "r")
+def load_students(filename = file.csv)
+  file = File.open(filename, "r")
   file.readlines.each do |line|
   name, cohort, hobby, date_of_birth, height = line.chomp.split(',')
     @students << {name: name, cohort: cohort.to_sym, hobby: hobby, date_of_birth: date_of_birth, height: height}
   end
   file.close
 end
+
+def try_load_students
+  filename = ARGV.first # first argument from the command line
+  return if filename.nil? # get out of the method if it isn't given
+  if File.exists?(filename) # if it exists
+    load_students(filename)
+     puts "Loaded #{@students.count} from #{filename}"
+  else # if it doesn't exist
+    puts "Sorry, #{filename} doesn't exist."
+    exit # quit the program
+  end
+end
+
 
 def process(selection)
   case selection
@@ -142,4 +155,5 @@ def show_students
   print_footer(@students)
 end
 
+try_load_students
 interactive_menu
