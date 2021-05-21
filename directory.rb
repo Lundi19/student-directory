@@ -16,11 +16,19 @@ def input_students
     puts "\n---Please enter the height(cm) of the student:"
     height = confirm_input
     height = "n/a" if height == ""
-    push_student(name, cohort, hobby, date_of_birth, height)  
+    push_student(name, cohort, hobby, date_of_birth, height) 
+    student_count
     puts "\n---Add another student? enter y/n:"
-    continue = gets.strip
+    continue = STDIN.gets.strip
   end
+  
   @students
+end
+
+def student_count
+plural = ""
+  plural = "s" if @students.length > 1 
+  puts "\n---Now we have #{@students.count} student#{plural}"
 end
 
 def confirm_input
@@ -50,9 +58,6 @@ def cohort_input
 
 def push_student(name, cohort, hobby, date_of_birth, height)
   @students << {name: name, cohort: cohort , hobby: hobby, date_of_birth: date_of_birth, height: height}
-  plural = ""
-  plural = "s" if @students.length > 1 
-  puts "\n---Now we have #{@students.count} student#{plural}"
 end    
 
 def print_header
@@ -106,11 +111,12 @@ def save_students
   file.close
 end
 
-def load_students(filename = file.csv)
+def load_students(filename = "file.csv")
   file = File.open(filename, "r")
   file.readlines.each do |line|
   name, cohort, hobby, date_of_birth, height = line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym, hobby: hobby, date_of_birth: date_of_birth, height: height}
+    #@students << {name: name, cohort: cohort.to_sym, hobby: hobby, date_of_birth: date_of_birth, height: height}
+    push_student(name, cohort, hobby, date_of_birth, height)
   end
   file.close
 end
