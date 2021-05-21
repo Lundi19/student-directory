@@ -83,6 +83,28 @@ def print(students)
   end  
 end
 
+def search_initial
+  i = 0
+    puts "Please enter the first initial of the student".center(100)
+    initial = gets.strip
+    search_names = @students.reject {|each| each[:name].chr != initial}
+    if search_names.length == 0
+      puts "No students found who's first initial is....#{initial}".center(100)
+      return
+    else
+      puts "Search results for initial '#{initial}'\n".center(100)
+      until i >= search_names.length
+        puts "-NAME: #{search_names[i][:name]}\n".center(100)
+        puts "-COHORT MONTH: #{search_names[i][:cohort]}\n".center(100)
+        puts "-HOBBY: #{search_names[i][:hobby]}\n".center(100)
+        puts "-BORN: #{search_names[i][:date_of_birth]}\n".center(100)
+        puts "-HEIGHT: #{search_names[i][:height]}\n".center(100)
+        puts "-------".center(100)
+        i += 1
+    end 
+  end
+end
+
 def print_footer(students)
   return if @students.length == 0
   plural = ""
@@ -115,8 +137,8 @@ def load_students(filename = "file.csv")
   file = File.open(filename, "r")
   file.readlines.each do |line|
   name, cohort, hobby, date_of_birth, height = line.chomp.split(',')
-    #@students << {name: name, cohort: cohort.to_sym, hobby: hobby, date_of_birth: date_of_birth, height: height}
-    push_student(name, cohort, hobby, date_of_birth, height)
+    @students << {name: name, cohort: cohort.to_sym, hobby: hobby, date_of_birth: date_of_birth, height: height}
+    
   end
   file.close
 end
@@ -139,19 +161,23 @@ def process(selection)
     when "1" then input_students
     when "2" then show_students
     when "3" then save_students
-    when "4" then load_students   
+    when "4" then load_students 
+    when "5" then search_initial  
     when "9" then exit
     else puts "\nI don't know what you mean, try again"
   end
 end
 
 def print_menu
-  
-  puts "\n1. Input the students"
-  puts "2. Show the students"
-  puts "3. Save students to file"
-  puts "4. Load students from file"
-  puts "9. Exit\n" 
+  puts
+  puts "Please select an option......"
+  puts
+  puts "1. Input the students".center(60)
+  puts "2. Show the students".center(60)
+  puts "3. Save students to file".center(60)
+  puts "4. Load students from file".center(60)
+  puts "5. Search by Initial".center(60)
+  puts "9. Exit\n".center(60)
   puts 
 end
 
