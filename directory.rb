@@ -1,29 +1,71 @@
 def input_students
   $students = []
-  continue = "yes"
-  while continue == "yes"
-    puts "Please enter the name of the student".center(100)
-    name = gets.chomp
-    puts "Please enter a hobby of the student".center(100)
-    hobby = gets.chomp
-    puts "Please enter the date of birth of the student".center(100)
-    date_of_birth = gets.chomp
-    puts "Please enter the height(cm) of the student".center(100)
-    height = gets.chomp
-    save_student(name, hobby, date_of_birth, height)  
-    puts "Add another student? enter yes or no".center(100)
+  continue = "y"
+  while continue == "y"
+    puts "Please enter the name of the student"
+    name = confirm_input
+      if name == ""
+        name = "n/a"
+      end 
+    puts "Please enter the cohort date of the student"
+    cohort = cohort_input       
+    puts "Please enter a hobby of the student"
+    hobby = confirm_input
+      if hobby == "" 
+        hobby = "n/a"
+      end  
+    puts "Please enter the date of birth of the student"
+    date_of_birth = confirm_input
+      if date_of_birth == "" 
+        date_of_birth = "n/a"
+      end  
+    puts "Please enter the height(cm) of the student"
+    height = confirm_input
+      if height == ""
+        height = "n/a"
+      end  
+    save_student(name, cohort, hobby, date_of_birth, height)  
+    puts "Add another student? enter y/n"
     continue = gets.chomp 
   end
   $students
 end
 
-def save_student(name, hobby, date_of_birth, height)
-  $students << {name: name, cohort: :november, hobby: hobby, date_of_birth: date_of_birth, height: height}
-  puts "Now we have #{$students.count} students".center(100)
+def confirm_input
+  input = gets.chomp
+  puts "you entered #{input}, is this correct? y/n?"
+  choice = "n"
+  choice  = gets.chomp
+    until choice == "y"
+      puts "please re-enter:"
+      input = gets.chomp
+      puts "you entered #{input}, is this correct? y/n?"  
+      choice  = gets.chomp
+    end
+  input
+end  
+
+def cohort_input
+  choice = gets.chomp
+  months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
+   until months.include?(choice.to_sym)
+    puts "\nPlease enter a valid month:"
+    choice = gets.chomp
+    end  
+  puts "student, added to  #{choice}"
+  choice.to_sym
+  end
+
+
+
+
+def save_student(name, cohort, hobby, date_of_birth, height)
+  $students << {name: name, cohort: cohort , hobby: hobby, date_of_birth: date_of_birth, height: height}
+  puts "\nNow we have #{$students.count} students"
 end    
 
 def print_header
-  puts "The students of villains Academy".center(100)
+  puts "THE STUDENTS".center(100)
   puts "---------------------".center(100)
 end
 
