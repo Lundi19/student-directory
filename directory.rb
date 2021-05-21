@@ -52,12 +52,9 @@ def cohort_input
     puts "\nPlease enter a valid month:"
     choice = gets.chomp
     end  
-  puts "student, added to  #{choice}"
+  puts "student, added to #{choice}"
   choice.to_sym
   end
-
-
-
 
 def save_student(name, cohort, hobby, date_of_birth, height)
   $students << {name: name, cohort: cohort , hobby: hobby, date_of_birth: date_of_birth, height: height}
@@ -71,6 +68,7 @@ end
 
 def print(students)
   i = 0
+  students = students.sort_by {|student| student[:cohort]}
   until i >= students.length
     puts "-NAME: #{students[i][:name]}".center(100)
     puts "-COHORT MONTH: #{students[i][:cohort]}".center(100)
