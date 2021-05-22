@@ -124,23 +124,9 @@ def interactive_menu
   end
 end
 
-# def save_students
-#   puts "Please enter the filename (.csv):"
-#   filename = gets.chomp
-#   file = File.open(filename, "w") do |file|
-#     @students.each do |student|
-#       student_data = [student[:name], student[:cohort], student[:hobby], student[:date_of_birth], student[:height]]
-#       csv_line = student_data.join(",")
-#       file.puts csv_line
-#     end
-#   end
-#   puts "\nSaving......."
-#   sleep(4)
-#   puts  "\nSaved successfully to #{filename}"
-#   puts
-# end
+
 def save_students(filename)
-  filename = "file.csv" if filename.empty? # default to students.csv if no filename given
+  filename = "students.csv" if filename.empty? # default to students.csv if no filename given
   # check the file type is correct
   if filename[-4..-1]!=".csv"
     puts "The filename is incorrect, now returning to menu. Please try again."
@@ -161,15 +147,13 @@ def load_students(filename)
       push_student(name, cohort, hobby, date_of_birth, height)
     end
     puts "List of students was loaded from #{filename}"
-    sleep(2)
   else 
     puts "The file does not exist, try again."
-    sleep(2)
   end
 end
 
 def try_load_students
-  ARGV.first.nil? ? filename = "file.csv" : filename = ARGV.first
+  ARGV.first.nil? ? filename = "students.csv" : filename = ARGV.first
   if File.exists?(filename) 
     load_students(filename)
     puts "\nLoaded #{@students.count} students details from: #{filename}"
@@ -178,6 +162,13 @@ def try_load_students
     exit 
   end
 end
+
+def source_code
+  puts "[][][][][][][][][][][][][][][][][][][][][][][][][][][][]"
+  puts File.read(__FILE__) 
+  puts "[][][][][][][][][][][][][][][][][][][][][][][][][][][][]"
+end
+
 
 def process(selection)
   case selection
@@ -202,6 +193,7 @@ def process(selection)
       puts "Complete\n"
       
     when "5" then search_initial  
+    when "6" then source_code
     when "9" then exit
     else puts "\nI don't know what you mean, try again"
   end
@@ -215,6 +207,7 @@ def print_menu
   puts "3. Save students to file"
   puts "4. Load students from file"
   puts "5. Search by Initial"
+  puts "6. view source code"
   puts "9. Exit\n"
   puts 
 end
