@@ -85,7 +85,7 @@ end
 def search_initial
   i = 0
     puts "Please enter the first initial of the student..."
-    initial = gets.strip
+    initial = STDIN.gets.strip
     search_names = @students.reject {|each| each[:name].chr != initial}
     if search_names.length == 0
       puts "searching......"
@@ -125,33 +125,33 @@ end
 def save_students
   puts "Please enter the filename (.csv):"
   filename = gets.chomp
-  file = File.open(filename, "w")
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort], student[:hobby], student[:date_of_birth], student[:height]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+  file = File.open(filename, "w") do |file|
+    @students.each do |student|
+      student_data = [student[:name], student[:cohort], student[:hobby], student[:date_of_birth], student[:height]]
+      csv_line = student_data.join(",")
+      file.puts csv_line
+    end
   end
-  file.close
   puts "\nSaving......."
-      sleep(4)
+  sleep(4)
   puts  "\nSaved successfully to #{filename}"
   puts
 end
 
 def load_students(filename = "file.csv")
-  file = File.open(filename, "r")
+  file = File.open(filename, "r") do |file|
   file.readlines.each do |line|
   name, cohort, hobby, date_of_birth, height = line.chomp.split(',')
     @students << {name: name, cohort: cohort.to_sym, hobby: hobby, date_of_birth: date_of_birth, height: height}
   end
-  file.close
+end
 end
 
 def try_load_students
   ARGV.first.nil? ? filename = "file.csv" : filename = ARGV.first
   if File.exists?(filename) 
     load_students(filename)
-     puts "\nLoaded #{@students.count} students details from: #{filename}"
+    puts "\nLoaded #{@students.count} students details from: #{filename}"
   else 
     puts "Sorry, #{filename} doesn't exist."
     exit 
