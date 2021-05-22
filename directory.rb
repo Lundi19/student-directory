@@ -113,8 +113,6 @@ def print_footer(students)
   plural = ""
   plural = "s" if @students.length > 1
   puts "Overall, we have #{@students.count} great student#{plural}".center(100)
-  #find is number of students is great than 1
-  # interpolate an "S" if its going to be plural"
 end
 
 def interactive_menu
@@ -125,15 +123,19 @@ def interactive_menu
 end
 
 def save_students
-  # open the file for writing
-  file = File.open("file.csv", "w")
-  # iterate over the array of students
+  puts "Please enter the filename (.csv):"
+  filename = gets.chomp
+  file = File.open(filename, "w")
   @students.each do |student|
     student_data = [student[:name], student[:cohort], student[:hobby], student[:date_of_birth], student[:height]]
     csv_line = student_data.join(",")
     file.puts csv_line
   end
   file.close
+  puts "\nSaving......."
+      sleep(4)
+  puts  "\nSaved successfully to #{filename}"
+  puts
 end
 
 def load_students(filename = "file.csv")
@@ -141,24 +143,20 @@ def load_students(filename = "file.csv")
   file.readlines.each do |line|
   name, cohort, hobby, date_of_birth, height = line.chomp.split(',')
     @students << {name: name, cohort: cohort.to_sym, hobby: hobby, date_of_birth: date_of_birth, height: height}
-    
   end
   file.close
 end
 
 def try_load_students
-  #filename = ARGV.first # first argument from the command line
-  #return if filename.nil? # get out of the method if it isn't given
   ARGV.first.nil? ? filename = "file.csv" : filename = ARGV.first
-  if File.exists?(filename) # if it exists
+  if File.exists?(filename) 
     load_students(filename)
      puts "\nLoaded #{@students.count} students details from: #{filename}"
-  else # if it doesn't exist
+  else 
     puts "Sorry, #{filename} doesn't exist."
-    exit # quit the program
+    exit 
   end
 end
-
 
 def process(selection)
   case selection
@@ -173,14 +171,15 @@ def process(selection)
       sleep(4)
       show_students
     when "3"
-      puts "\nsaving......."
-      sleep(4)
-      puts "\nStudent list successfully saved"
       save_students
     when "4"
+      puts "Please enter the name of the file (eg data.csv)" 
+      puts  "or leave empty to open the default file, students.csv"
+      load_filename = gets.chomp
+      load_filename.empty? ? load_students : load_students(load_filename)
       puts "\nLoading......."
       sleep(3)
-      puts "Complete"
+      puts "Complete\n"
       load_students
     when "5" then search_initial  
     when "9" then exit
@@ -189,8 +188,7 @@ def process(selection)
 end
 
 def print_menu
-  puts
-  puts "Please select an option......"
+  puts "\nPlease select an option......"
   puts
   puts "1. Input the students"
   puts "2. Show the students"
