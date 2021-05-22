@@ -1,4 +1,6 @@
+require 'csv'
 @students = []
+
 def input_students
   continue = "y"
   while continue == "y"
@@ -56,7 +58,7 @@ def cohort_input
   end
 
 def push_student(name, cohort, hobby, date_of_birth, height)
-  @students << {name: name, cohort: cohort , hobby: hobby, date_of_birth: date_of_birth, height: height}
+  @students << {name: name, cohort: cohort.to_sym , hobby: hobby, date_of_birth: date_of_birth, height: height}
 end    
 
 def print_header
@@ -122,29 +124,48 @@ def interactive_menu
   end
 end
 
-def save_students
-  puts "Please enter the filename (.csv):"
-  filename = gets.chomp
-  file = File.open(filename, "w") do |file|
-    @students.each do |student|
-      student_data = [student[:name], student[:cohort], student[:hobby], student[:date_of_birth], student[:height]]
-      csv_line = student_data.join(",")
-      file.puts csv_line
-    end
+# def save_students
+#   puts "Please enter the filename (.csv):"
+#   filename = gets.chomp
+#   file = File.open(filename, "w") do |file|
+#     @students.each do |student|
+#       student_data = [student[:name], student[:cohort], student[:hobby], student[:date_of_birth], student[:height]]
+#       csv_line = student_data.join(",")
+#       file.puts csv_line
+#     end
+#   end
+#   puts "\nSaving......."
+#   sleep(4)
+#   puts  "\nSaved successfully to #{filename}"
+#   puts
+# end
+def save_students(filename)
+  filename = "file.csv" if filename.empty? # default to students.csv if no filename given
+  # check the file type is correct
+  if filename[-4..-1]!=".csv"
+    puts "The filename is incorrect, now returning to menu. Please try again."
+    return
   end
-  puts "\nSaving......."
-  sleep(4)
-  puts  "\nSaved successfully to #{filename}"
-  puts
+  # CSV library  to write to a file.
+  CSV.open(filename, "wb") do |csv|
+    # iterate 
+    @students.each { |student| csv << [student[:name], student[:cohort], student[:hobby], student[:date_of_birth], student[:height]] }  
+  end
 end
 
-def load_students(filename = "file.csv")
-  file = File.open(filename, "r") do |file|
-  file.readlines.each do |line|
-  name, cohort, hobby, date_of_birth, height = line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym, hobby: hobby, date_of_birth: date_of_birth, height: height}
+def load_students(filename)
+  if File.exists?(filename) # check that the file exists
+    # open the file and generate the hashes using CSV library
+    CSV.foreach(filename) do |line|
+      name, cohort, hobby, date_of_birth, height = line # parallel assignment
+      push_student(name, cohort, hobby, date_of_birth, height)
+    end
+    puts "List of students was loaded from #{filename}"
+    sleep(2)
+  else 
+    puts "The file does not exist, try again."
+    sleep(2)
   end
-end
 end
 
 def try_load_students
@@ -171,16 +192,15 @@ def process(selection)
       sleep(4)
       show_students
     when "3"
-      save_students
+      puts "What filename would you like to save as? Please type the .csv extension as well."
+      save_students(STDIN.gets.chomp)
     when "4"
       puts "Please enter the name of the file (eg data.csv)" 
-      puts  "or leave empty to open the default file, students.csv"
-      load_filename = gets.chomp
-      load_filename.empty? ? load_students : load_students(load_filename)
+      load_students(STDIN.gets.chomp)
       puts "\nLoading......."
       sleep(3)
       puts "Complete\n"
-      load_students
+      
     when "5" then search_initial  
     when "9" then exit
     else puts "\nI don't know what you mean, try again"
